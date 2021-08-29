@@ -1,35 +1,7 @@
 import unittest
-
-from flask import Flask
-
-from request_arg import request_arg
 from http import HTTPStatus
 
-
-def create_app():
-    app = Flask("test")
-    app.config["TESTING"] = True
-
-    @request_arg("int_value", int)
-    @request_arg("float_value", float)
-    def route_int_float(int_value, float_value):
-        return f"""
-        <p>int_value:{int_value}</p>
-        <p>float_value:{float_value}</p>
-        """
-
-    @request_arg("string_value")
-    def route_string(string_value):
-        return f"""
-        <p>string_value:{string_value}</p>
-        """
-
-    app.add_url_rule("/post", view_func=route_int_float, methods=["POST"])
-    app.add_url_rule("/get", view_func=route_int_float, methods=["GET"])
-
-    app.add_url_rule("/post_string", view_func=route_string, methods=["POST"])
-    app.add_url_rule("/get_string", view_func=route_string, methods=["GET"])
-    return app
+from flask_test_app import create_app
 
 
 class TestRequestArg(unittest.TestCase):
@@ -51,10 +23,23 @@ class TestRequestArg(unittest.TestCase):
         self.assertInHTML(f"int_value:{int_value}", r)
         self.assertInHTML(f"float_value:{float_value}", r)
 
+    def test_put_json(self):
+        float_value = 123.456
+        int_value = 43987439
+        r = self.app.put(
+            "/put_json",
+            json=dict(int_value=int_value, float_value=float_value),
+            content_type="application/json",
+        )
+        self.assertEqual(HTTPStatus.OK, r.status_code, r.data)
+        self.assertInHTML(f"int_value:{int_value}", r)
+        self.assertInHTML(f"float_value:{float_value}", r)
+
     def test_get(self):
         float_value = 123.456
         int_value = 43987439
         string_value = "o4iuuo34u390jsfdsf"
+        optional_string_value = "ooiiu43hssh"
         r = self.app.get(
             "/get", data=dict(int_value=int_value, float_value=float_value)
         )
@@ -67,6 +52,17 @@ class TestRequestArg(unittest.TestCase):
         r = self.app.get("/get_string", data=dict(string_value=string_value))
         self.assertEqual(HTTPStatus.OK, r.status_code)
         self.assertInHTML(f"string_value:{string_value}", r)
+        self.assertInHTML(f"<p>optional_string_value:</p>", r)
+        # optional value
+        r = self.app.get(
+            "/get_string",
+            data=dict(
+                string_value=string_value, optional_string_value=optional_string_value
+            ),
+        )
+        self.assertEqual(HTTPStatus.OK, r.status_code)
+        self.assertInHTML(f"string_value:{string_value}", r)
+        self.assertInHTML(f"<p>optional_string_value:{optional_string_value}</p>", r)
 
         r = self.app.post("/post_string", data=dict(string_value=string_value))
         self.assertEqual(HTTPStatus.OK, r.status_code)
@@ -91,6 +87,16 @@ class TestRequestArg(unittest.TestCase):
         self.assertEqual(HTTPStatus.BAD_REQUEST, r.status_code)
         self.assertEqual(b"Required argument missing: float_value", r.data)
         r = self.app.post("/post", data=dict(float_value=float_value))
+        self.assertEqual(HTTPStatus.BAD_REQUEST, r.status_code)
+        self.assertEqual(b"Required argument missing: int_value", r.data)
+
+        # PUT json
+
+        r = self.app.put(
+            "/put_json",
+            json=dict(float_value=float_value),
+            content_type="application/json",
+        )
         self.assertEqual(HTTPStatus.BAD_REQUEST, r.status_code)
         self.assertEqual(b"Required argument missing: int_value", r.data)
 
@@ -119,3 +125,13 @@ class TestRequestArg(unittest.TestCase):
         r = self.app.post("/post", data=dict(float_value="hello", int_value=int_value))
         self.assertEqual(HTTPStatus.BAD_REQUEST, r.status_code)
         self.assertIn(b"Required argument failed type conversion: float_value", r.data)
+
+    def test_readme_example(self):
+        r = self.app.get("/area_of_a_circle", data=dict(radius=1))
+        self.assertEqual(b"3.14", r.data)
+        r = self.app.put("/area_of_a_circle", json=dict(radius=1))
+        self.assertEqual(b"3.14", r.data)
+        r = self.app.post("/area_of_a_circle", data=dict(radius=1))
+        self.assertEqual(b"3.14", r.data)
+        r = self.app.put("/area_of_a_circle", data=dict(radius=1))
+        self.assertEqual(b"3.14", r.data)
