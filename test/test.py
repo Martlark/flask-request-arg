@@ -1,7 +1,7 @@
 import unittest
 from http import HTTPStatus
 
-from flask_test_app import create_app
+from test.flask_test_app import create_app
 
 
 class TestRequestArg(unittest.TestCase):
