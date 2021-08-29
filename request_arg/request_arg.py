@@ -30,17 +30,20 @@ def request_arg(arg_name: str, arg_type: Any = None, arg_default=None) -> Callab
     def decorator(f):
         @wraps(f)
         def decorated(*args, **kwargs):
+            arg_value = None
             if request.content_type == "application/json":
                 # json body
                 json_data = request.get_json()
                 arg_value = json_data.get(arg_name, arg_default)
-            else:
-                # form or parameter arguments
+
+            # form or parameter arguments
+            if arg_value is None:
                 arg_value = (
                     request.form.get(arg_name)
                     or request.args.get(arg_name)
                     or arg_default
                 )
+
             if arg_value is not None:
                 if arg_type:
                     try:

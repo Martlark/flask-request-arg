@@ -139,7 +139,11 @@ class TestRequestArg(unittest.TestCase):
     def test_custom_arg_type(self):
         r = self.app.get("/custom_arg_type", data=dict(arg_type=True))
         self.assertEqual(b"yes", r.data)
-        r = self.app.put("/custom_arg_type", json=dict(arg_type=False))
+        r = self.app.put(
+            "/custom_arg_type",
+            json=dict(arg_type=False),
+            content_type="application/json",
+        )
         self.assertEqual(b"no", r.data)
         r = self.app.put("/custom_arg_type", json=dict(arg_type="False"))
         self.assertEqual(b"no", r.data)
@@ -147,3 +151,13 @@ class TestRequestArg(unittest.TestCase):
         self.assertEqual(b"yes", r.data)
         r = self.app.put("/custom_arg_type", json=dict(arg_type="true"))
         self.assertEqual(b"no", r.data)
+
+    def test_get_json_arg_form(self):
+        float_value = 123.456
+        int_value = 43987439
+        r = self.app.get(
+            f"/get?int_value={int_value}", json=dict(float_value=float_value)
+        )
+        self.assertEqual(HTTPStatus.OK, r.status_code, r.data)
+        self.assertInHTML(f"int_value:{int_value}", r)
+        self.assertInHTML(f"float_value:{float_value}", r)

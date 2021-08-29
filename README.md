@@ -111,6 +111,8 @@ fetch('/area_of_circle', {
 })
 ```
 
+NOTE: request arguments and JSON body data can be used together on the same request.
+
 As you can see the `Flask` method code is the same for GET, PUT and POST.  So you can
 do all three at once.  Example:
 
