@@ -135,3 +135,15 @@ class TestRequestArg(unittest.TestCase):
         self.assertEqual(b"3.14", r.data)
         r = self.app.put("/area_of_a_circle", data=dict(radius=1))
         self.assertEqual(b"3.14", r.data)
+
+    def test_custom_arg_type(self):
+        r = self.app.get("/custom_arg_type", data=dict(arg_type=True))
+        self.assertEqual(b"yes", r.data)
+        r = self.app.put("/custom_arg_type", json=dict(arg_type=False))
+        self.assertEqual(b"no", r.data)
+        r = self.app.put("/custom_arg_type", json=dict(arg_type="False"))
+        self.assertEqual(b"no", r.data)
+        r = self.app.put("/custom_arg_type", json=dict(arg_type="True"))
+        self.assertEqual(b"yes", r.data)
+        r = self.app.put("/custom_arg_type", json=dict(arg_type="true"))
+        self.assertEqual(b"no", r.data)

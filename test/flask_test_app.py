@@ -32,6 +32,15 @@ def create_app():
         "/area_of_a_circle", view_func=area_of_circle, methods=["GET", "POST", "PUT"]
     )
 
+    @request_arg("arg_type", lambda x: x == "True")
+    def custom_arg_type(arg_type):
+        result = "yes" if arg_type else "no"
+        return Response(f"{result}", 200)
+
+    app.add_url_rule(
+        "/custom_arg_type", view_func=custom_arg_type, methods=["GET", "POST", "PUT"]
+    )
+
     # int and float
 
     app.add_url_rule("/post", view_func=route_int_float, methods=["POST"])
