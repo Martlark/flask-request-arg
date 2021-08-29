@@ -15,13 +15,13 @@
 from codecs import open
 from setuptools import setup
 
-VERSION = "1.0.0"
+VERSION = open("VERSION", "r", encoding="utf-8").read()
 LONG_DESCRIPTION = open("README.md", "r", encoding="utf-8").read()
 
 setup(
     name="flask-request-arg",
     version=VERSION,
-    description="Easy way to convert Flask request form and args to route parameters.",
+    description="Easy way to convert Flask request form, JSON and args to route parameters.",
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
     url="https://github.com/Martlark/flask-request-arg",

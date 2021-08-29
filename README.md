@@ -203,4 +203,4 @@ def area_of_circle(pi, radius):
 Release history
 ---------------
 
-1.0.0 - Initial release
+0.0.1 - Initial release
