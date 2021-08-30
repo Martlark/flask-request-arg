@@ -18,10 +18,6 @@ PACKAGE=flask_request_arg
 pip install setuptools
 pip install wheel
 pip install twine
-pip install flask
-pip install flask-sqlalchemy
-pip install flask-wtf
-pip install pytest-flask
 
 # on each release
 

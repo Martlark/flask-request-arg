@@ -13,9 +13,10 @@ issues are:
  * Intricate logic used to handle defaults and missing values.
  * Request arguments and form fields are not clear from the method signature.
  * GET, PUT, POST all require different logic to get values.
+ * Documentation for request and form values are not easy to generate.
 
 `flask-request-arg` solves this issues by allowing you to use a simple decorator
-to specify the argument name, type and default value.  Then any form data, json
+to specify the argument name, type and default value.  Then any form data, JSOM
 data or request argument is converted into a named method parameter.  POST using form 
 data, GET using arguments or PUT with JSON body data all can use the same
 code logic.
@@ -33,9 +34,19 @@ Usage
 @request_arg(arg_name: str, arg_type: Any = None, arg_default=None) -> Callable:
 ```
 
-* `arg_name` - the name of the argument to add as a method parameter, and the form name.
+* `arg_name` - the name of the argument to add as a method parameter.
 * `arg_type` - the type of the argument.  All form and request args are usually strings.
-* `arg_default`  - default value of the argument for not in form or request.
+* `arg_default`  - default value of the argument when not in form or request.
+
+### Notes
+
+ * to make an argument required do not provide an `arg_default`.
+ * a `<form>` `<input>` `name` must match the `request_arg` argument name.
+ * a JSON body key must match the `request_arg` argument name.
+ * any request argument name must be a valid `Python` variable name.
+
+Example
+-------
 
 To call an area of circle method with a parameter argument as in this example:
 
@@ -76,7 +87,7 @@ def area_of_circle(radius):
     return Response(f"{result}", 200)
 ```
 
-Used from HTML as:
+HTML example:
 
 ```html
 <form action="/area_of_circle" method="post">
@@ -84,6 +95,9 @@ Used from HTML as:
     <button type="submit">Get area</button>
 </form>
 ```
+NOTE: the form input name must match the `request_arg` argument name.
+
+NOTE: request arguments and form data can be used together on the same request.
 
 JSON Data
 ---------
@@ -204,4 +218,5 @@ def area_of_circle(pi, radius):
 Release history
 ---------------
 
-0.0.1 - Initial release
+1.0.0 - Tidy up documentation.  Proper release.
+0.0.2 - Initial release
