@@ -1,6 +1,6 @@
 from flask import Flask, Response
 
-from request_arg import request_arg
+from flask_request_arg import request_arg
 
 
 def create_app():

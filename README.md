@@ -48,8 +48,9 @@ To call an area of circle method with a parameter argument as in this example:
 Structure your Flask route as follows:
 
 ```python
-from request_arg import request_arg
+from flask_request_arg import request_arg
 from flask import Response
+
 
 @request_arg('radius', float)
 @app.route('/area_of_circle', methods=['GET'])
@@ -63,10 +64,10 @@ Forms
 
 A method that handles POST can be structured the same as a GET.  Example:
 
-
 ```python
-from request_arg import request_arg
+from flask_request_arg import request_arg
 from flask import Response
+
 
 @request_arg('radius', float)
 @app.route('/area_of_circle', methods=['POST'])
@@ -89,10 +90,10 @@ JSON Data
 
 JSON body data is treated the same as a POST or GET.  Example:
 
-
 ```python
-from request_arg import request_arg
+from flask_request_arg import request_arg
 from flask import Response
+
 
 @request_arg('radius', float)
 @app.route('/area_of_circle', methods=['PUT'])
@@ -116,10 +117,10 @@ NOTE: request arguments and JSON body data can be used together on the same requ
 As you can see the `Flask` method code is the same for GET, PUT and POST.  So you can
 do all three at once.  Example:
 
-
 ```python
-from request_arg import request_arg
+from flask_request_arg import request_arg
 from flask import Response
+
 
 @request_arg('radius', float)
 @app.route('/area_of_circle', methods=['GET', 'PUT', 'POST'])
@@ -137,10 +138,10 @@ Request arguments of the type
    
 are treated the same as `form` or `JSON` data.Example:
 
-
 ```python
-from request_arg import request_arg
+from flask_request_arg import request_arg
 from flask import Response
+
 
 # /area_of_circle?radius=124.56
 
@@ -158,10 +159,10 @@ Use the `arg_type` parameter to specify a type conversion for the string value.
 
 The arg_type can be any Python type.  The default is`str`.  Example:
 
-
 ```python
-from request_arg import request_arg
+from flask_request_arg import request_arg
 from flask import Response
+
 
 @request_arg('radius', float)
 @request_arg('number_of_circles', int)
@@ -187,10 +188,10 @@ Mixing parameters
 
 If required you can mix Flask request parameters with request arguments.  Example:
 
-
 ```python
-from request_arg import request_arg
+from flask_request_arg import request_arg
 from flask import Response
+
 
 @request_arg('radius', float)
 @app.route('/area_of_circle/<float:pi>/', methods=['GET'])

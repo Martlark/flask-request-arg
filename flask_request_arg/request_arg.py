@@ -12,7 +12,7 @@ def request_arg(arg_name: str, arg_type: Any = None, arg_default=None) -> Callab
     conversion. Example:
 
         @route('/something/<greeting>/')
-        @request_arg('repeat', int, 1)
+        @flask_request_arg('repeat', int, 1)
         def route_something(greeting='', repeat):
             return greeting * repeat
 
