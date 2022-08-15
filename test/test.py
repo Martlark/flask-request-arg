@@ -35,6 +35,22 @@ class TestRequestArg(unittest.TestCase):
         self.assertInHTML(f"int_value:{int_value}", r)
         self.assertInHTML(f"float_value:{float_value}", r)
 
+    def test_default(self):
+
+        # string
+        string_value = "12345"
+        r = self.app.get("/get_string_default")
+        self.assertEqual(HTTPStatus.OK, r.status_code)
+        self.assertInHTML(f"string_value:{string_value}", r)
+
+        r = self.app.put("/put_string_default")
+        self.assertEqual(HTTPStatus.OK, r.status_code)
+        self.assertInHTML(f"string_value:{string_value}", r)
+
+        r = self.app.post("/post_string_default")
+        self.assertEqual(HTTPStatus.OK, r.status_code)
+        self.assertInHTML(f"string_value:{string_value}", r)
+
     def test_get(self):
         float_value = 123.456
         int_value = 43987439
@@ -161,3 +177,13 @@ class TestRequestArg(unittest.TestCase):
         self.assertEqual(HTTPStatus.OK, r.status_code, r.data)
         self.assertInHTML(f"int_value:{int_value}", r)
         self.assertInHTML(f"float_value:{float_value}", r)
+
+    def test_bool(self):
+
+        for test_value in [True, "Yes", "Y", 1, "True", "true", "TRUE"]:
+            r = self.app.get("/is_it_true", data=dict(the_truth=test_value))
+            self.assertEqual(b"True", r.data)
+
+        for test_value in [False, "No", "N", 0, "Frlong"]:
+            r = self.app.get("/is_it_true", data=dict(the_truth=test_value))
+            self.assertEqual(b"False", r.data)

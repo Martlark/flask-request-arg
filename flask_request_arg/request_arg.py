@@ -5,6 +5,18 @@ from typing import Any, Callable
 from flask import request, abort, Response
 
 
+TRUTHY_VALUES = ("y", "Y", "yes", "Yes", "YES", True, "true", "True", "TRUE", 1, "1")
+
+
+def is_truthy(value: Any) -> bool:
+    """
+    return True if value seems to be a true value.
+    :param value:
+    :return: True or False
+    """
+    return value in TRUTHY_VALUES
+
+
 def request_arg(arg_name: str, arg_type: Any = None, arg_default=None) -> Callable:
     """
     decorator to auto convert argument, json body or form fields to
@@ -47,6 +59,8 @@ def request_arg(arg_name: str, arg_type: Any = None, arg_default=None) -> Callab
             if arg_value is not None:
                 if arg_type:
                     try:
+                        if arg_type == bool:
+                            arg_value = is_truthy(arg_value)
                         arg_value = arg_type(arg_value)
                     except Exception as e:
                         abort(

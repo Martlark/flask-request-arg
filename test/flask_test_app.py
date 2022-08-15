@@ -23,10 +23,20 @@ def create_app():
         <p>optional_string_value:{optional_string_value}</p>
         """
 
+    @request_arg("string_value", arg_default="12345")
+    def route_default(string_value):
+        return f"""
+        <p>string_value:{string_value}</p>
+        """
+
     @request_arg("radius", float)
     def area_of_circle(radius):
         result = radius * radius * 3.14
         return Response(f"{result}", 200)
+
+    @request_arg("the_truth", bool)
+    def is_it_true(the_truth):
+        return Response(f"{the_truth}", 200)
 
     app.add_url_rule(
         "/area_of_a_circle", view_func=area_of_circle, methods=["GET", "POST", "PUT"]
@@ -50,4 +60,10 @@ def create_app():
 
     app.add_url_rule("/post_string", view_func=route_string, methods=["POST"])
     app.add_url_rule("/get_string", view_func=route_string, methods=["GET"])
+
+    app.add_url_rule("/post_string_default", view_func=route_default, methods=["POST"])
+    app.add_url_rule("/get_string_default", view_func=route_default, methods=["GET"])
+    app.add_url_rule("/put_string_default", view_func=route_default, methods=["PUT"])
+
+    app.add_url_rule("/is_it_true", view_func=is_it_true, methods=["GET"])
     return app
