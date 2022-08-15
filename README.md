@@ -227,6 +227,7 @@ def area_of_circle(pi, radius):
 Release history
 ---------------
 
+* 1.0.2 - Fix publish
 * 1.0.1 - Use truthy values for `bool` types
 * 1.0.0 - Tidy up documentation.  Proper release.
 * 0.0.2 - Initial release
