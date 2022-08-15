@@ -196,11 +196,20 @@ Custom type converters can be supplied using a `lambda`.  Example:
         result = "yes" if arg_type else "no"
         return Response(f"{result}", 200)
 ```
+ 
+When using `bool` as an `arg_type`, a _truthy_ test will be done and 
+return `True` if the value is in:
+
+```python
+
+    ("y", "Y", "yes", "Yes", "YES", True, "true", "True", "TRUE", 1, "1")
+
+```
 
 Mixing parameters
 -----------------
 
-If required you can mix Flask request parameters with request arguments.  Example:
+If required, you can mix Flask request parameters with request arguments.  Example:
 
 ```python
 from flask_request_arg import request_arg
@@ -218,5 +227,6 @@ def area_of_circle(pi, radius):
 Release history
 ---------------
 
-1.0.0 - Tidy up documentation.  Proper release.
-0.0.2 - Initial release
+* 1.0.1 - Use truthy values for `bool` types
+* 1.0.0 - Tidy up documentation.  Proper release.
+* 0.0.2 - Initial release
