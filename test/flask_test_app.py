@@ -9,10 +9,12 @@ def create_app():
 
     @request_arg("int_value", int)
     @request_arg("float_value", float)
-    def route_int_float(int_value, float_value):
+    @request_arg("header_value", str, arg_default="")
+    def route_int_float_str(int_value, float_value, header_value):
         return f"""
         <p>int_value:{int_value}</p>
         <p>float_value:{float_value}</p>
+        <p>header_value:{header_value}</p>
         """
 
     @request_arg("string_value")
@@ -53,9 +55,9 @@ def create_app():
 
     # int and float
 
-    app.add_url_rule("/post", view_func=route_int_float, methods=["POST"])
-    app.add_url_rule("/get", view_func=route_int_float, methods=["GET"])
-    app.add_url_rule("/put_json", view_func=route_int_float, methods=["PUT"])
+    app.add_url_rule("/post", view_func=route_int_float_str, methods=["POST"])
+    app.add_url_rule("/get", view_func=route_int_float_str, methods=["GET"])
+    app.add_url_rule("/put_json", view_func=route_int_float_str, methods=["PUT"])
     # string with optional string
 
     app.add_url_rule("/post_string", view_func=route_string, methods=["POST"])

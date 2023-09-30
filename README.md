@@ -6,7 +6,7 @@ Easy way to convert Flask request form and args to route parameters.
 Introduction
 ------------
 
-Handling `form` and `request` parameters in `Flask` is complex and error-prone. Common 
+Handling `form` and `request` and `header` parameters in `Flask` is complex and error-prone. Common 
 issues are:
 
  * Values need to be converted to the correct type.
@@ -17,7 +17,7 @@ issues are:
 
 `flask-request-arg` solves this issues by allowing you to use a simple decorator
 to specify the argument name, type and default value.  Then any form data, JSOM
-data or request argument is converted into a named method parameter.  POST using form 
+data, header or request argument is converted into a named method parameter.  POST using form 
 data, GET using arguments or PUT with JSON body data all can use the same
 code logic.
 
@@ -73,7 +73,7 @@ def area_of_circle(radius):
 Forms
 -----
 
-A method that handles POST can be structured the same as a GET.  Example:
+A method that handles POST can be structured the same as a GET. Example:
 
 ```python
 from flask_request_arg import request_arg
@@ -102,7 +102,7 @@ NOTE: request arguments and form data can be used together on the same request.
 JSON Data
 ---------
 
-JSON body data is treated the same as a POST or GET.  Example:
+JSON body data is treated the same as a POST or GET. Example:
 
 ```python
 from flask_request_arg import request_arg
@@ -129,7 +129,7 @@ fetch('/area_of_circle', {
 NOTE: request arguments and JSON body data can be used together on the same request.
 
 As you can see the `Flask` method code is the same for GET, PUT and POST.  So you can
-do all three at once.  Example:
+do all three at once. Example:
 
 ```python
 from flask_request_arg import request_arg
@@ -150,7 +150,7 @@ Request arguments of the type
 
    `/route?argument1=value1&argument2=value2` 
    
-are treated the same as `form` or `JSON` data.Example:
+are treated the same as `form` or `JSON` data. Example:
 
 ```python
 from flask_request_arg import request_arg
@@ -165,6 +165,17 @@ def area_of_circle(radius):
     result = radius * radius * 3.14
     return Response(f"{result}", 200)
 ```
+
+Request headers
+---------------
+
+Request headers of the format:
+
+   `header-name: values here and here` 
+   
+are treated the same as `form`, `parameters` or `JSON` data.
+
+
 
 Converting values
 -----------------
@@ -227,6 +238,7 @@ def area_of_circle(pi, radius):
 Release history
 ---------------
 
+* 1.0.2 - Add header support
 * 1.0.2 - Fix publish
 * 1.0.1 - Use truthy values for `bool` types
 * 1.0.0 - Tidy up documentation.  Proper release.

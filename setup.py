@@ -21,7 +21,7 @@ LONG_DESCRIPTION = open("README.md", "r", encoding="utf-8").read()
 setup(
     name="flask-request-arg",
     version=VERSION,
-    description="Easy way to convert Flask request form, JSON and args to route parameters.",
+    description="Easy way to convert Flask request form, header, JSON and parameters to route arguments.",
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
     url="https://github.com/Martlark/flask-request-arg",
@@ -43,12 +43,13 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Operating System :: POSIX",
         "Operating System :: MacOS",
         "Operating System :: Unix",
         "Operating System :: Microsoft :: Windows",
     ],
-    keywords="flask request arguments form json parameters",
+    keywords="flask request arguments form json headers parameters",
     packages=["flask_request_arg"],
     include_package_data=True,
 )

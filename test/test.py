@@ -16,12 +16,16 @@ class TestRequestArg(unittest.TestCase):
     def test_post(self):
         float_value = 123.456
         int_value = 43987439
+        header_value = "9xx9839"
         r = self.app.post(
-            "/post", data=dict(int_value=int_value, float_value=float_value)
+            "/post",
+            data=dict(int_value=int_value, float_value=float_value),
+            headers={"header_value": header_value},
         )
         self.assertEqual(HTTPStatus.OK, r.status_code)
         self.assertInHTML(f"int_value:{int_value}", r)
         self.assertInHTML(f"float_value:{float_value}", r)
+        self.assertInHTML(f"header_value:{header_value}", r)
 
     def test_put_json(self):
         float_value = 123.456
@@ -57,11 +61,15 @@ class TestRequestArg(unittest.TestCase):
         string_value = "o4iuuo34u390jsfdsf"
         optional_string_value = "ooiiu43hssh"
         r = self.app.get(
-            "/get", data=dict(int_value=int_value, float_value=float_value)
+            "/get",
+            data=dict(
+                int_value=int_value, float_value=float_value, header_value=string_value
+            ),
         )
         self.assertEqual(HTTPStatus.OK, r.status_code)
         self.assertInHTML(f"int_value:{int_value}", r)
         self.assertInHTML(f"float_value:{float_value}", r)
+        self.assertInHTML(f"header_value:{string_value}", r)
 
         # string
 
