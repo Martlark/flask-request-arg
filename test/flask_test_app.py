@@ -9,7 +9,7 @@ def create_app():
 
     @request_arg("int_value", int)
     @request_arg("float_value", float)
-    @request_arg("header_value", str, arg_default="")
+    @request_arg("Header-Value", str, arg_default="")
     def route_int_float_str(int_value, float_value, header_value):
         return f"""
         <p>int_value:{int_value}</p>

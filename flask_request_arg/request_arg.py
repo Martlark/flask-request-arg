@@ -1,6 +1,7 @@
 from functools import wraps
 from http import HTTPStatus
 from typing import Any, Callable
+import string
 
 from flask import request, abort, Response
 
@@ -15,6 +16,30 @@ def is_truthy(value: Any) -> bool:
     :return: True or False
     """
     return value in TRUTHY_VALUES
+
+
+def to_python_name(var_name):
+    """
+    convert to a python acceptable name
+
+    stripped, lowercased, incompatible chars are replaced with _
+    and if starts with number _ is prepended
+    white space is striped from each end
+
+    :param var_name: name to convert
+    :return: new name
+    """
+    acceptable_chars = "_" + string.ascii_lowercase + string.digits
+    var_name = var_name.strip().lower()
+
+    for c in var_name:
+        if c not in acceptable_chars:
+            var_name = var_name.replace(c, "_")
+
+    if var_name[0] in string.digits:
+        var_name = "_" + var_name
+
+    return var_name
 
 
 def request_arg(arg_name: str, arg_type: Any = None, arg_default=None) -> Callable:
@@ -39,6 +64,8 @@ def request_arg(arg_name: str, arg_type: Any = None, arg_default=None) -> Callab
     :return: a decorator
     """
 
+    var_name = to_python_name(arg_name)
+
     def decorator(f):
         @wraps(f)
         def decorated(*args, **kwargs):
@@ -54,7 +81,7 @@ def request_arg(arg_name: str, arg_type: Any = None, arg_default=None) -> Callab
                 arg_value = (
                     request.form.get(arg_name)
                     or request.args.get(arg_name)
-                    or request.headers.get(arg_name)
+                    or request.headers.get(arg_name.lower())
                     or arg_default
                 )
 
@@ -72,11 +99,11 @@ def request_arg(arg_name: str, arg_type: Any = None, arg_default=None) -> Callab
                             )
                         )
 
-                kwargs[arg_name] = arg_value
+                kwargs[var_name] = arg_value
                 return f(*args, **kwargs)
             abort(
                 Response(
-                    f"""Required argument missing: {arg_name}""",
+                    f"""Required argument missing: {var_name}""",
                     status=HTTPStatus.BAD_REQUEST,
                 )
             )
