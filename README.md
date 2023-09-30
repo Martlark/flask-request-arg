@@ -1,7 +1,12 @@
 flask-request-arg
 =================
 
-Easy way to convert Flask request form and args to route parameters.
+The easy way to convert Flask request, form, header and request args to route parameters.
+
+Installation
+------------
+
+pip install flask-request-arg
 
 Introduction
 ------------
@@ -21,13 +26,22 @@ data, header or request argument is converted into a named method parameter.  PO
 data, GET using arguments or PUT with JSON body data all can use the same
 code logic.
 
-Installation
-------------
+Argument names
+--------------
 
-pip install flask-request-arg
+Argument names are converted into a Python acceptable variable name by removing
+white space from each end and then making it lowercase and
+replacing hyphen, space and other weird characters with underscore _.  If the 
+name starts with a number then an underscore is prepended to the name.  Example
 
-Usage
------
+    @request_arg('Header-Value')
+
+becomes:
+
+    def route_name(header_value)
+
+General Usage
+-------------
 
 ```python
 
@@ -238,7 +252,8 @@ def area_of_circle(pi, radius):
 Release history
 ---------------
 
-* 1.0.2 - Add header support
+* 1.0.4 - Add argument variable name fixing
+* 1.0.3 - Add header support
 * 1.0.2 - Fix publish
 * 1.0.1 - Use truthy values for `bool` types
 * 1.0.0 - Tidy up documentation.  Proper release.

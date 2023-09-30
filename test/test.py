@@ -2,6 +2,7 @@ import unittest
 from http import HTTPStatus
 
 from test.flask_test_app import create_app
+from flask_request_arg.request_arg import to_python_name
 
 
 class TestRequestArg(unittest.TestCase):
@@ -13,6 +14,21 @@ class TestRequestArg(unittest.TestCase):
         _app = create_app()
         self.app = _app.test_client()
 
+    def test_var_name(self):
+
+        for name, expected in [
+            ("123", "_123"),
+            ("123[", "_123_"),
+            ("123[^%$#", "_123_____"),
+            ("12 3 ", "_12_3"),
+            ("_12 3 ", "_12_3"),
+            (" 12 3 ", "_12_3"),
+            ("header-value", "header_value"),
+            ("-header-value", "_header_value"),
+            ("-header-Value", "_header_value"),
+        ]:
+            self.assertEqual(expected, to_python_name(name), name)
+
     def test_post(self):
         float_value = 123.456
         int_value = 43987439
@@ -20,7 +36,7 @@ class TestRequestArg(unittest.TestCase):
         r = self.app.post(
             "/post",
             data=dict(int_value=int_value, float_value=float_value),
-            headers={"header_value": header_value},
+            headers={"Header-Value": header_value},
         )
         self.assertEqual(HTTPStatus.OK, r.status_code)
         self.assertInHTML(f"int_value:{int_value}", r)
@@ -62,9 +78,8 @@ class TestRequestArg(unittest.TestCase):
         optional_string_value = "ooiiu43hssh"
         r = self.app.get(
             "/get",
-            data=dict(
-                int_value=int_value, float_value=float_value, header_value=string_value
-            ),
+            data=dict(int_value=int_value, float_value=float_value),
+            headers={"Header-Value": string_value},
         )
         self.assertEqual(HTTPStatus.OK, r.status_code)
         self.assertInHTML(f"int_value:{int_value}", r)
