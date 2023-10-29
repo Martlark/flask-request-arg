@@ -1,3 +1,4 @@
+import json
 from functools import wraps
 from http import HTTPStatus
 from typing import Any, Callable
@@ -70,20 +71,31 @@ def request_arg(arg_name: str, arg_type: Any = None, arg_default=None) -> Callab
         @wraps(f)
         def decorated(*args, **kwargs):
             arg_value = None
+            json_data = None
 
             if request.content_type == "application/json":
                 # json body
-                json_data = request.get_json()
-                arg_value = json_data.get(arg_name, arg_default)
+                try:
+                    json_data = request.get_json()
+                    arg_value = json_data.get(arg_name)
+                except Exception as e:
+                    raise Exception(f"not application/json: {e}")
 
             # form, header or parameter arguments
             if arg_value is None:
                 arg_value = (
                     request.form.get(arg_name)
                     or request.args.get(arg_name)
-                    or request.headers.get(arg_name.lower())
+                    or request.headers.get(arg_name)
                     or arg_default
                 )
+
+            if arg_value is None and json_data is None:
+                try:
+                    json_data = json.loads(request.data)
+                    arg_value = json_data.get(arg_name)
+                except:
+                    pass
 
             if arg_value is not None:
                 if arg_type:

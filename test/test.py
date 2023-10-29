@@ -1,3 +1,4 @@
+import json
 import unittest
 from http import HTTPStatus
 
@@ -43,6 +44,35 @@ class TestRequestArg(unittest.TestCase):
         self.assertInHTML(f"float_value:{float_value}", r)
         self.assertInHTML(f"header_value:{header_value}", r)
 
+    def test_post_json(self):
+        float_value = 123.456
+        int_value = 43987439
+        header_value = "9xx9839"
+        r = self.app.post(
+            "/post",
+            json=dict(int_value=int_value, float_value=float_value),
+            headers={"Header-Value": header_value},
+            content_type="application/json",
+        )
+        self.assertEqual(HTTPStatus.OK, r.status_code)
+        self.assertInHTML(f"int_value:{int_value}", r)
+        self.assertInHTML(f"float_value:{float_value}", r)
+        self.assertInHTML(f"header_value:{header_value}", r)
+
+    def test_post_json_string(self):
+        float_value = 123.456
+        int_value = 43987439
+        header_value = "9xx9839"
+        r = self.app.post(
+            "/post",
+            data=json.dumps(dict(int_value=int_value, float_value=float_value)),
+            headers={"Header-Value": header_value},
+        )
+        self.assertEqual(HTTPStatus.OK, r.status_code)
+        self.assertInHTML(f"int_value:{int_value}", r)
+        self.assertInHTML(f"float_value:{float_value}", r)
+        self.assertInHTML(f"header_value:{header_value}", r)
+
     def test_put_json(self):
         float_value = 123.456
         int_value = 43987439
@@ -50,6 +80,17 @@ class TestRequestArg(unittest.TestCase):
             "/put_json",
             json=dict(int_value=int_value, float_value=float_value),
             content_type="application/json",
+        )
+        self.assertEqual(HTTPStatus.OK, r.status_code, r.data)
+        self.assertInHTML(f"int_value:{int_value}", r)
+        self.assertInHTML(f"float_value:{float_value}", r)
+
+    def test_put_json_string(self):
+        float_value = 123.456
+        int_value = 43987439
+        r = self.app.put(
+            "/put_json",
+            data=json.dumps(dict(int_value=int_value, float_value=float_value)),
         )
         self.assertEqual(HTTPStatus.OK, r.status_code, r.data)
         self.assertInHTML(f"int_value:{int_value}", r)
