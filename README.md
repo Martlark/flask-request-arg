@@ -26,6 +26,9 @@ data, header or request argument is converted into a named method parameter.  PO
 data, GET using arguments or PUT with JSON body data all can use the same
 code logic.
 
+When using JSON data it is recommended to set the content type to "application/json". 
+An attempt is made to try to convert body data to JSON if no argument is found.
+
 Argument names
 --------------
 
@@ -252,6 +255,7 @@ def area_of_circle(pi, radius):
 Release history
 ---------------
 
+* 1.0.5 - Allow JSON coercion of body data. 
 * 1.0.4 - Add argument variable name fixing
 * 1.0.3 - Add header support
 * 1.0.2 - Fix publish
